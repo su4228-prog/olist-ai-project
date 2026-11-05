@@ -3,9 +3,11 @@
 브라질 마켓플레이스 Olist의 실제 주문 데이터(2016~2018)로 **상품 · 리뷰 · 판매자** 문제를 머신러닝/딥러닝으로 풀고,
 저장한 모델 4개를 불러와 예측하는 **Streamlit 대시보드**로 서빙한 포트폴리오 프로젝트입니다.
 
+<br>배포 사이트: https://olist-ai-project.streamlit.app/
+
 ![대시보드 데모](docs/demo/olist_dashboard_demo.gif)
 
-> 🎬 데모 영상 (MP4, 약 1분) : [docs/demo/olist_dashboard_demo.mp4](docs/demo/olist_dashboard_demo.mp4) — 로컬에서 실행한 대시보드를 녹화했습니다.
+> 🎬 데모 영상 (MP4, 약 1분) : [docs/demo/olist_dashboard_demo.mp4](docs/demo/olist_dashboard_demo.mp4)
 
 ## 프로젝트 개요
 
