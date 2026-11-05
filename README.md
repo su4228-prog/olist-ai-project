@@ -4,6 +4,8 @@
 저장한 모델 4개를 불러와 예측하는 **Streamlit 대시보드**로 서빙한 포트폴리오 프로젝트입니다.
 
 <br>배포 사이트: https://olist-ai-project.streamlit.app/
+<br>PDF 다운로드: [olist_ai_project_slides.pdf](https://github.com/user-attachments/files/34413458/olist_ai_project_slides.pdf)
+
 
 ![대시보드 데모](docs/demo/olist_dashboard_demo.gif)
 
