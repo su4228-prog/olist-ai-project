@@ -162,7 +162,6 @@ Kaggle 공개 데이터(CSV 9개)를 하나로 합쳐 탐색(EDA)하고, 데이�
 ### 11. 전략 제안과 한계
 ![slide 11](docs/slides/slide_11.png)
 
-> 슬라이드는 HTML([docs/slides_html/slides.html](docs/slides_html/slides.html))로 만들고 PNG로 내보냈습니다. 그래프는 Colab 분석 실행 결과 이미지를 그대로 사용했습니다.
 
 ## 실행 방법
 
