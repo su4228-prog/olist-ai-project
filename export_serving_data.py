@@ -1,6 +1,6 @@
 """
 STEP2-1. 서빙용 데이터 만들기
-- 원본 CSV 9개 → 대시보드가 읽을 작은 파일 5개(data/)로 줄입니다.
+- 원본 CSV 9개 → 대시보드가 읽을 작은 파일 4개(data/)로 줄입니다.
 - 학습할 때와 같은 판매자 특징 함수를 써서 '최신 기준일' 판매자 표를 만듭니다.
   (모델 예측은 여기서 하지 않고, 앱이 models/의 .pkl을 불러와 직접 합니다 = 서빙)
 
@@ -15,18 +15,15 @@ import pandas as pd
 
 START, END = "2017-01-01", "2018-09-01"   # 분석 기간 (2017-01 ~ 2018-08)
 NOW = "2018-08-23"                         # PART 10과 같은 적용 기준일
-BAD = ["canceled", "unavailable"]          # 판매 실적에서 뺄 주문 상태
-LOG_COLUMNS = ["frequency", "monetary", "avg_order_value", "orders_last_3m", "orders_prev_3m"]
+BAD = ["canceled", "unavailable"]
 
 
 # ── PART 8 · 9 · 10과 똑같은 판매자 특징 함수 (바꾸면 모델 입력이 달라지므로 그대로 둡니다) ──
 def make_seller_profile(orders, items, reviews, cutoff, start="2017-01-01"):
-    """기준일(cutoff) 이전 기록만으로 판매자별 RFM · 배송 · 리뷰 특징 계산 (미래 정보 누수 방지)"""
     cutoff = pd.Timestamp(cutoff)
     o = orders[(orders["order_purchase_timestamp"] >= start)
                & (orders["order_purchase_timestamp"] < cutoff)
                & ~orders["order_status"].isin(BAD)]
-    # 판매자 × 주문 단위로 묶기 (한 주문에 같은 판매자 상품이 여러 개일 수 있음)
     line = items.merge(o, on="order_id")
     so = line.groupby(["seller_id", "order_id"]).agg(
         purchase=("order_purchase_timestamp", "first"),
@@ -36,7 +33,6 @@ def make_seller_profile(orders, items, reviews, cutoff, start="2017-01-01"):
         limit=("shipping_limit_date", "max"),
         sales=("price", "sum"),
     ).reset_index()
-    # 기준일 이후에 일어난 출고 · 도착 · 리뷰는 '아직 모르는 정보'로 비움
     so["carrier"] = so["carrier"].where(so["carrier"] < cutoff)
     so["delivered"] = so["delivered"].where(so["delivered"] < cutoff)
     score = reviews[reviews["review_creation_date"] < cutoff].groupby("order_id")["review_score"].mean()
@@ -46,8 +42,6 @@ def make_seller_profile(orders, items, reviews, cutoff, start="2017-01-01"):
     so["is_ship_late"] = np.where(so["carrier"].isna(), np.nan, so["carrier"] > so["limit"])
     so["is_low_review"] = np.where(so["score"].isna(), np.nan, so["score"] <= 2)
     so["month"] = so["purchase"].dt.to_period("M")
-
-    # 판매자 1명 = 1행으로 요약
     g = so.groupby("seller_id")
     prof = pd.DataFrame({
         "frequency": g.size(),
@@ -66,7 +60,6 @@ def make_seller_profile(orders, items, reviews, cutoff, start="2017-01-01"):
 
 
 def count_orders(orders, items, start, end):
-    """[start, end) 기간에 판매자별로 받은 주문 수"""
     valid = orders[~orders["order_status"].isin(BAD)]
     so = items[["order_id", "seller_id"]].drop_duplicates().merge(
         valid[["order_id", "order_purchase_timestamp"]], on="order_id")
@@ -75,21 +68,19 @@ def count_orders(orders, items, start, end):
 
 
 def make_churn_features(orders, items, reviews, cutoff):
-    """판매자 특징 + 최근 3개월 · 그 전 3개월 주문 수와 추세 (최근 3개월에 활동한 판매자만)"""
     cutoff = pd.Timestamp(cutoff)
     m3, m6 = cutoff - pd.DateOffset(months=3), cutoff - pd.DateOffset(months=6)
     prof = make_seller_profile(orders, items, reviews, cutoff)
     prof["orders_last_3m"] = prof["seller_id"].map(count_orders(orders, items, m3, cutoff)).fillna(0)
     prof["orders_prev_3m"] = prof["seller_id"].map(count_orders(orders, items, m6, m3)).fillna(0)
     prof["order_trend"] = prof["orders_last_3m"] - prof["orders_prev_3m"]
-    for col in LOG_COLUMNS:
+    for col in ["frequency", "monetary", "avg_order_value", "orders_last_3m", "orders_prev_3m"]:
         prof[f"log_{col}"] = np.log1p(prof[col])
     prof["log_order_trend"] = prof["log_orders_last_3m"] - prof["log_orders_prev_3m"]
     return prof[prof["orders_last_3m"] > 0].reset_index(drop=True)
 
 
 def main(raw: Path, out: Path):
-    """원본 CSV(raw) → out/data/ 에 서빙용 .csv.gz 5개 저장"""
     out_data = out / "data"
     out_data.mkdir(parents=True, exist_ok=True)
     dcols = ["order_purchase_timestamp", "order_delivered_carrier_date",
@@ -101,8 +92,6 @@ def main(raw: Path, out: Path):
     customers = pd.read_csv(raw / "olist_customers_dataset.csv")
     products = pd.read_csv(raw / "olist_products_dataset.csv")
     trans = pd.read_csv(raw / "product_category_name_translation.csv")
-    sellers = pd.read_csv(raw / "olist_sellers_dataset.csv")
-    valid = orders[~orders["order_status"].isin(BAD)]
 
     # ① orders.csv.gz : 배송 완료 주문 1건 = 1행 (EDA 탭용)
     d = orders[(orders["order_status"] == "delivered")
@@ -144,7 +133,8 @@ def main(raw: Path, out: Path):
 
     # ③ sellers_latest.csv.gz : 최신 기준일 판매자 특징 (PART 8 · 9 모델 입력)
     latest = make_churn_features(orders, items, reviews, NOW)
-    s3 = items.merge(valid[["order_id", "order_purchase_timestamp"]], on="order_id")
+    v = orders[~orders["order_status"].isin(BAD)]
+    s3 = items.merge(v[["order_id", "order_purchase_timestamp"]], on="order_id")
     t = s3["order_purchase_timestamp"]
     s3 = s3[(t >= pd.Timestamp(NOW) - pd.DateOffset(months=3)) & (t < NOW)]
     latest["sales_last_3m"] = latest["seller_id"].map(s3.groupby("seller_id")["price"].sum()).fillna(0)
@@ -157,7 +147,8 @@ def main(raw: Path, out: Path):
         out_data / "reviews_recent.csv.gz", index=False)
 
     # ⑤ products_info.csv.gz : 상품 카드에 보여 줄 판매 실적 (상품 이름은 원본에 없음 = 익명화)
-    vi = items.merge(valid[["order_id", "order_purchase_timestamp"]], on="order_id")
+    sellers = pd.read_csv(raw / "olist_sellers_dataset.csv")
+    vi = items.merge(v[["order_id", "order_purchase_timestamp"]], on="order_id")
     vi = vi[vi["order_purchase_timestamp"].between(START, END, inclusive="left")].merge(
         sellers[["seller_id", "seller_state"]], on="seller_id", how="left")
     info = vi.groupby("product_id").agg(
@@ -169,7 +160,6 @@ def main(raw: Path, out: Path):
     info["freight"] = info["freight"].round(2)
     info.to_csv(out_data / "products_info.csv.gz", index=False)
 
-    # 결과 요약 출력
     for f in sorted(out_data.glob("*.csv.gz")):
         print(f"{f.name:24s} {f.stat().st_size / 1024:8.0f} KB")
     print(f"배송 완료 주문 {len(o):,}건 / 판매자(기준일 {NOW}) {len(latest):,}명 / 최근 리뷰 {len(rr):,}건")

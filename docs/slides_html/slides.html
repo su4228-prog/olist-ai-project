@@ -5,17 +5,17 @@
 <title>Olist AI Project Slides</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <style>
-/* ── 대시보드(ui.py)와 같은 팔레트 ── */
+/* ── 대시보드(ui.py)와 같은 팔레트 : 회색 · 흰색 바탕 + 파랑 · 주황 그라데이션 ── */
 :root {
-  --blue: #A8D6F2; --blue-deep: #74B4E0; --blue-soft: #E3F2FC;
-  --yellow: #F8DD88; --yellow-soft: #FCE8A8;
-  --lav: #CCC3F6; --lav-soft: #E0DAFB; --violet: #8D7FE6; --accent: #4B3BB0;
-  --red: #F3AAB7; --red-soft: #FDEBEE; --red-ink: #C9455C;
-  --ink: #23253A; --muted: #8A8EA3; --line: #ECEEF4; --canvas: #F4F5F9; --surface: #F7F8FB;
-  --radius: 20px; --shadow: 0 2px 12px rgba(35, 37, 58, .05);
+  --blue: #2E70F2; --blue-deep: #1C56E2; --blue-soft: #E8EFFE;
+  --yellow: #FFA270; --yellow-soft: #FFEDE4;
+  --lav: #C9D7FA; --lav-soft: #EEF3FE; --violet: #FF6D2A; --accent: #1C56E2;
+  --red: #FF6D2A; --red-soft: #FFEDE4; --red-ink: #E3490A;
+  --ink: #1F2326; --muted: #8A9099; --line: #E3E4E7; --canvas: #FFFFFF; --surface: #F6F8FC;
+  --radius: 20px; --shadow: none;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #DADCE6; font-family: Pretendard, 'Malgun Gothic', sans-serif; color: var(--ink); }
+body { background: #D5D7DB; font-family: Pretendard, 'Malgun Gothic', sans-serif; color: var(--ink); }
 
 /* ── 슬라이드 틀 : 1600 × 900 ── */
 .slide { width: 1600px; height: 900px; background: var(--canvas); position: relative; overflow: hidden;
@@ -54,13 +54,13 @@ b, strong { font-weight: 800; }
 .kpis { display: grid; gap: 12px; }
 .kpi { border-radius: 16px; padding: 14px 16px; }
 .kpi .v { font-size: 30px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
-.kpi .l { font-size: 13px; font-weight: 600; color: #4A4D63; margin-top: 4px; line-height: 1.35; }
+.kpi .l { font-size: 13px; font-weight: 600; color: #4A5059; margin-top: 4px; line-height: 1.35; }
 .kpi.lav { background: var(--lav-soft); } .kpi.yel { background: var(--yellow-soft); }
 .kpi.blu { background: var(--blue-soft); } .kpi.red { background: var(--red-soft); } .kpi.wht { background: #FFF; box-shadow: var(--shadow); }
 
 /* ── 표 ── */
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
-th { background: var(--surface); text-align: left; font-weight: 700; color: #4A4D63; padding: 8px 11px; }
+th { background: var(--surface); text-align: left; font-weight: 700; color: #4A5059; padding: 8px 11px; }
 td { padding: 8px 11px; border-top: 1px solid var(--line); vertical-align: top; line-height: 1.45; }
 table.roomy td { padding: 12px 12px; } table.roomy { font-size: 14.5px; }
 tr.best td { background: var(--lav-soft); font-weight: 700; }
@@ -88,6 +88,22 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .shot { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
 .shot img { width: 100%; display: block; }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+
+/* ── 새 디자인 색 덧칠 (내용 · 배치는 그대로) ── */
+/* 바탕은 흰색, 흰 카드는 얇은 테두리로 구분 */
+.card { border: 1px solid #E6E8EC; }
+.card.lav, .card.yel, .card.blu, .card.red { border-color: transparent; }
+.kpi.wht { border: 1px solid #E6E8EC; }
+.shot { border-color: #E6E8EC; }
+.pill { background: #FF6D2A; color: #FFFFFF; }
+.card h3 .no { background: #1F2326; color: #FFFFFF; }
+tr.best td { background: var(--blue-soft); }
+.bar .t { background: repeating-linear-gradient(135deg, #E6E7EA 0 4px, #F3F3F5 4px 8px); }
+.bar .t i { background: linear-gradient(90deg, #BFD1FB, #1C56E2); }
+.bar.on .t i { background: linear-gradient(90deg, #FDC3A6, #E3490A); }
+.bar .t i[style*="--yellow"] { background: linear-gradient(90deg, #FDC3A6, #FF6D2A) !important; }
+.bar .t i[style*="--red"] { background: linear-gradient(90deg, #FDC3A6, #E3490A) !important; }
+[style*="transparent 62%"] { background: linear-gradient(transparent 62%, #FDC3A6 62%) !important; }
 </style>
 </head>
 <body>
@@ -103,7 +119,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <div class="kicker">DATA · MACHINE LEARNING · DEEP LEARNING · SERVING</div>
       <div style="font-size:50px;font-weight:800;line-height:1.18;letter-spacing:-.03em;margin:6px 0 16px">
         Olist 이커머스 데이터로<br><span style="background:linear-gradient(transparent 62%, var(--yellow) 62%)">상품 · 리뷰 · 판매자</span> 문제를<br>푸는 AI 프로젝트</div>
-      <p style="font-size:17px;line-height:1.6;color:#4A4D63">
+      <p style="font-size:17px;line-height:1.6;color:#4A5059">
         브라질 마켓플레이스 Olist 공개 데이터(2016~2018)를 Google Colab에서 분석·학습하고,<br>
         저장한 모델 4개를 불러와 예측하는 <b>Streamlit 대시보드</b>로 서빙했습니다.</p>
       <div class="kpis" style="grid-template-columns:repeat(4,1fr);margin-top:24px">
@@ -121,7 +137,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;">
-      <div class="shot" style="box-shadow:0 12px 40px rgba(35,37,58,.12)"><img src="img/dash_home.png" alt="dashboard"></div>
+      <div class="shot" style="box-shadow:0 12px 40px rgba(31,35,38,.10)"><img src="img/dash_home.png" alt="dashboard"></div>
       <div class="card" style="padding:14px 18px">
         <h3 style="margin-bottom:8px">사용 기술</h3>
         <div><span class="tag">Python</span><span class="tag">pandas</span><span class="tag">NumPy</span><span class="tag">Matplotlib</span>
@@ -275,7 +291,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         <ul><li>고객 기반 추천 · 고객 이탈 예측의 근거가 사라짐</li><li>→ <b>상품</b> 기반 추천 (PART 6), <b>판매자</b> 이탈 (PART 9)</li><li>제안 : 첫 구매 후 재구매 쿠폰 · 알림</li></ul></div>
       <div class="card yel"><h3><span class="no">3</span>신용카드 할부가 구매의 기본</h3>
         <div class="kpis" style="grid-template-columns:1fr 1fr"><div class="kpi wht"><div class="v">75.5%</div><div class="l">신용카드 결제</div></div><div class="kpi wht"><div class="v">66.8%</div><div class="l">그중 할부</div></div></div>
-        <p class="cap" style="color:#4A4D63">→ 무이자 할부 프로모션 (KPI 고가 상품 전환율)</p></div>
+        <p class="cap" style="color:#4A5059">→ 무이자 할부 프로모션 (KPI 고가 상품 전환율)</p></div>
       <div class="card" style="flex:1"><h3>월별 매출 — 급락을 의심하기</h3><div class="fig"><img src="img/05_eda__c11_2.png"></div>
         <p class="cap">마지막 달 급락은 실제 하락이 아니라 <b>데이터 수집 종료</b> → 기간을 잘라 분석</p></div>
     </div>
@@ -306,7 +322,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:12px;flex:1;min-height:0">
         <div class="fig" style="background:#fff;border-radius:12px;padding:6px"><img src="img/05_eda__c45_10.png"></div>
         <div class="kpis" style="grid-template-columns:1fr 1fr;align-content:center"><div class="kpi wht"><div class="v red-t" style="font-size:24px">4.30→2.57</div><div class="l">지연 시 평균 리뷰</div></div><div class="kpi wht"><div class="v red-t" style="font-size:24px">7배</div><div class="l">1점 리뷰 비율</div></div>
-          <p class="cap" style="grid-column:span 2;color:#4A4D63;margin:0">→ 리뷰 글로 불만 분류 (PART 7), 지연이 몰린 판매자 찾기 (PART 8)</p></div>
+          <p class="cap" style="grid-column:span 2;color:#4A5059;margin:0">→ 리뷰 글로 불만 분류 (PART 7), 지연이 몰린 판매자 찾기 (PART 8)</p></div>
       </div></div>
   </div>
   <div class="foot"><span>그래프 : STEP1 Colab 분석 결과 (PART 5)</span><span>05</span></div>
@@ -321,7 +337,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         <ul><li>원본 CSV → <b>상품 1개 = 1행</b> 특징표 직접 생성</li><li>거래 3건 이상 · 상위 15개 카테고리 → <b>2,498개</b></li><li>특징 : 가격 · 무게 · 가로/세로/높이 · 사진 수 · 평점</li><li>치우친 값은 <b>로그 변환</b>, 단위 차이는 <b>스케일링</b></li></ul></div>
       <div class="card lav"><h3>핵심 아이디어</h3>
         <p>카테고리는 ‘종류’를 맞추는 <b>필터</b>,<br>숫자 특징은 ‘급’을 맞추는 <b>거리(KNN)</b>.</p>
-        <p class="cap" style="color:#4A4D63">같은 카테고리 안에서도 가격은 몇 배, 무게는 열 배 넘게 차이</p></div>
+        <p class="cap" style="color:#4A5059">같은 카테고리 안에서도 가격은 몇 배, 무게는 열 배 넘게 차이</p></div>
       <div class="card"><h3>비교한 세 방법</h3>
         <div class="flow" style="flex-direction:column;gap:6px">
           <div class="step"><b>① 같은 카테고리 랜덤</b>가장 단순한 기준선</div>
@@ -372,7 +388,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
           <tr><td>rápida (빠른)</td><td class="num">4.78</td><td>diferente (다른)</td><td class="num">−3.85</td></tr>
           <tr><td>excelente (탁월한)</td><td class="num">4.70</td><td>aguardando (기다리는 중)</td><td class="num">−3.48</td></tr>
         </table>
-        <p class="cap" style="color:#4A4D63">별점만 보고 학습했는데도 부정 단어에서 <b>배송 지연 · 오배송 · 품질 · 파손</b> 유형이 드러남</p></div>
+        <p class="cap" style="color:#4A5059">별점만 보고 학습했는데도 부정 단어에서 <b>배송 지연 · 오배송 · 품질 · 파손</b> 유형이 드러남</p></div>
     </div>
     <div class="card"><h3>같은 test로 비교한 정확도</h3>
       <div class="bars" style="margin-top:6px">
@@ -458,7 +474,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     <div style="display:flex;flex-direction:column;gap:16px;min-height:0">
       <div class="card lav"><h3>이탈을 데이터로 정의</h3>
         <p>2018-03~05 활동 판매자가 이후 3개월 동안 <b>유효 주문 0건</b> → 이탈</p>
-        <p class="cap" style="color:#4A4D63">실제 폐업이 아닌 <b>실습용 정의</b></p></div>
+        <p class="cap" style="color:#4A5059">실제 폐업이 아닌 <b>실습용 정의</b></p></div>
       <div class="card"><h3>시간으로 나눠 누수 방지</h3>
         <div class="flow" style="flex-direction:column;gap:6px">
           <div class="step"><b>과거 → 특징</b>기준일 2018-06-01 이전 기록만</div>
@@ -544,7 +560,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
           <tr><td><b>홈</b></td><td>주문 · 매출 · 활동 판매자 · 평균 별점, 월별 매출, 유형 비율</td></tr>
           <tr><td><b>데이터 분석</b></td><td>지역 · 기간 필터, 핵심 지표 6개, 인사이트, 매출 · 시간 · 카테고리 · 배송 · 지역 · 원본 표</td></tr>
           <tr><td><b>AI 모델</b></td><td>리뷰 판정 · 판매자 진단 · 비슷한 상품 찾기 · 모델 설명</td></tr></table>
-        <p class="cap" style="color:#4A4D63">데모 영상 : docs/demo/olist_dashboard_demo.mp4</p></div>
+        <p class="cap" style="color:#4A5059">데모 영상 : docs/demo/olist_dashboard_demo.mp4</p></div>
     </div>
   </div>
   <div class="foot"><span>화면 : 로컬 실행 대시보드 캡처</span><span>10</span></div>
@@ -569,7 +585,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
           <div class="kpi wht"><div class="v">23건</div><div class="l">별점 4~5점인데 강한 부정<br>(확률 0.9 이상)</div></div>
           <div class="kpi wht"><div class="v">3,471건</div><div class="l">2018-08 이후 글 있는 리뷰</div></div>
           <div class="kpi wht"><div class="v" style="font-size:24px">23.3% → 33.1%</div><div class="l">별점 1~2점 비율 → 모델이 부정으로 본 비율</div></div></div>
-        <p class="cap" style="color:#4A4D63">예) “AINDA NÃO RECEBI O PRODUTO” (아직 상품을 못 받았다) — 별점 4점</p>
+        <p class="cap" style="color:#4A5059">예) “AINDA NÃO RECEBI O PRODUTO” (아직 상품을 못 받았다) — 별점 4점</p>
         <p style="margin-top:8px">모델 학습 시점(2018-06-01)이 아니라 <b>데이터의 마지막 시점</b>에 적용해 연락할 판매자 · 확인할 리뷰 목록을 만듦</p></div>
       <div class="card"><h3>왜 고객 기반 모델을 하지 않았나</h3>
         <ul><li>1회 구매 고객 <b>97.0%</b></li><li>고객 × 상품 표 채워진 칸 <b>0.003%</b> → 협업 필터링 불가</li><li>고객 이탈은 “전부 이탈”만 찍어도 정확도 97% → 의미 없는 문제</li></ul>

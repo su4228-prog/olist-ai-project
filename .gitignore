@@ -6,3 +6,4 @@ venv/
 data/*.csv
 .DS_Store
 .ipynb_checkpoints/
+upload_to_github.bat
